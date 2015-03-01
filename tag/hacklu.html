@@ -22,10 +22,10 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://johnsupercool.github.io/posts/2014/oct./24/hacklu-2014-ctf-exploit200-personnel-database/">Hack.lu 2014 <span class="caps">CTF</span> - Exploit200 Personnel&nbsp;Database</a></h1>
+                    <h1 class="entry-title"><a href="https://johnsupercool.github.io/posts/2014/oct./25/hacklu-2014-ctf-exploit200-personnel-database/">Hack.lu 2014 <span class="caps">CTF</span> - Exploit200 Personnel&nbsp;Database</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2014-10-24T21:06:00.797358+02:00">
-                Published: vendredi, 24 octobre 2014
+        <abbr class="published" title="2014-10-25T00:00:00+02:00">
+                Published: samedi, 25 octobre 2014
         </abbr>
 
         <address class="vcard author">
@@ -67,9 +67,9 @@ The user is also considered as logged&nbsp;in.</li>
 <p>So here the path was quite clear.
 We have to find the way to fool the system to have a high access_level then we can whois <em>boss</em>.</p>
 <p>Let&#8217;s have a look on a typical stored file&nbsp;:</p>
-<div class="highlight"><pre><span class="n">hash</span><span class="o">=</span><span class="mi">62062626</span>
-<span class="n">access_level</span><span class="o">=</span><span class="mi">0</span>
-<span class="n">description</span><span class="o">=</span><span class="n">Cool</span> <span class="n">description</span> <span class="n">goes</span> <span class="n">here</span>
+<div class="highlight"><pre>hash=62062626
+access_level=0
+description=Cool description goes here
 </pre></div>
 
 
@@ -111,22 +111,22 @@ We have to find the way to fool the system to have a high access_level then we c
 
 <p>So basically this parses a file by reading it line by line, &#8230; assuming that a line has less than 256 bytes.
 If the line contains more than 256 bytes, this line will be read in two&nbsp;times.</p>
-<p>However, the rest of the code expects a user description to be at most 512 bytes, and we have to control of the description with <strong>set_description</strong>.</p>
+<p>However, the rest of the code expects an user description to be at most 512 bytes, and we have the control of the description with <strong>set_description</strong>.</p>
 <p>Moreover, there is no trace of what have been read so far.
 So in the file you can have an entry twice witout problem, since only the last line will be&nbsp;used.</p>
 <p>So, what could go wrong&nbsp;?</p>
 <p>Well we can make a file like that&nbsp;: </p>
-<div class="highlight"><pre><span class="n">hash</span><span class="o">=</span><span class="mi">62062626</span>
-<span class="n">access_level</span><span class="o">=</span><span class="mi">0</span>
-<span class="n">description</span><span class="o">=</span><span class="n">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaccess_level</span><span class="o">=</span><span class="mi">11</span>
+<div class="highlight"><pre>hash=62062626
+access_level=0
+description=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaccess_level=11
 </pre></div>
 
 
 <p>And this will be read as it would be&nbsp;:</p>
-<div class="highlight"><pre><span class="n">hash</span><span class="o">=</span><span class="mi">62062626</span>
-<span class="n">access_level</span><span class="o">=</span><span class="mi">0</span>
-<span class="n">description</span><span class="o">=</span><span class="n"><span class="caps">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span></span>
-<span class="n">access_level</span><span class="o">=</span><span class="mi">11</span>
+<div class="highlight"><pre>hash=62062626
+access_level=0
+description=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+access_level=11
 </pre></div>
 
 
@@ -175,7 +175,7 @@ Here is mine for instance&nbsp;:</p>
 
 
 <p>And you get the flag : <strong>flag{this_is_why_gets_is_better_than_fgets}</strong>&nbsp;.</p>
-<p>Thanks again to the fluxfingers team for this amazing <span class="caps">CTF</span>&nbsp;!</p><p>There are <a href="https://johnsupercool.github.io/posts/2014/oct./24/hacklu-2014-ctf-exploit200-personnel-database/#disqus_thread">comments</a>.</p>                </article>
+<p>Thanks again to the fluxfingers team for this amazing <span class="caps">CTF</span>&nbsp;!</p><p>There are <a href="https://johnsupercool.github.io/posts/2014/oct./25/hacklu-2014-ctf-exploit200-personnel-database/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
@@ -190,7 +190,7 @@ Here is mine for instance&nbsp;:</p>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2014-10-24T21:05:47.874468+02:00">
+        <abbr class="published" title="2014-10-24T00:00:00+02:00">
                 Published: vendredi, 24 octobre 2014
         </abbr>
 

